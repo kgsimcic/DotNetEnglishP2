@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyModel.Resolution;
 using P2FixAnAppDotNetCode.Models;
 using P2FixAnAppDotNetCode.Models.Repositories;
 using P2FixAnAppDotNetCode.Models.Services;
@@ -53,10 +55,12 @@ namespace P2FixAnAppDotNetCode.Tests
             productRepository = new ProductRepository();
             productService = new ProductService(productRepository, orderRepository);
             products = productService.GetAllProducts();
+
             cart.AddItem(products.Where(p => p.Id == 1).First(), 1);
             cart.AddItem(products.Where(p => p.Id == 3).First(), 2);
             cart.AddItem(products.Where(p => p.Id == 5).First(), 3);
             productService.UpdateProductQuantities(cart);
+
             Assert.Equal(8, products.Where(p => p.Id == 1).First().Stock);
             Assert.Equal(26, products.Where(p => p.Id == 3).First().Stock);
             Assert.Equal(44, products.Where(p => p.Id == 5).First().Stock);

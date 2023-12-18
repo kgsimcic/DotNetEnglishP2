@@ -1,4 +1,5 @@
-﻿using P2FixAnAppDotNetCode.Models.Repositories;
+﻿using Microsoft.WindowsAzure.Storage.RetryPolicies;
+using P2FixAnAppDotNetCode.Models.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,7 +32,7 @@ namespace P2FixAnAppDotNetCode.Models.Services
         /// </summary>
         public Product GetProductById(int id)
         {
-            return GetAllProducts().Where(l => l.Id == id).FirstOrDefault();
+            return GetAllProducts().Where(p => p.Id == id).FirstOrDefault();
         }
 
         /// <summary>
@@ -39,8 +40,10 @@ namespace P2FixAnAppDotNetCode.Models.Services
         /// </summary>
         public void UpdateProductQuantities(Cart cart)
         {
-            // TODO implement the method
-            // update product inventory by using _productRepository.UpdateProductStocks() method.
+            foreach (CartLine c in cart.Lines)
+            {
+                _productRepository.UpdateProductStocks(c.Product.Id, c.Quantity);
+            }
         }
     }
 }
